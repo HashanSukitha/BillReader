@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Bill Scanner</title>
+    <title>Manual Bill Scanner</title>
     <style>
         video {
             width: 100%;
             max-width: 500px;
+            display: block;
+            margin-bottom: 10px;
         }
         canvas {
             position: absolute;
@@ -34,12 +36,21 @@
             padding: 8px;
             text-align: left;
         }
+        button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h2>Live Bill Scanner</h2>
+    <h2>Manual Bill Scanner</h2>
+    
     <video id="video" autoplay></video>
-    <button onclick="startScanning()">Start Scanning</button>
+    <button onclick="scanText()">📸 Scan</button>
+    
     <p id="output">Scanned Text: </p>
 
     <canvas id="canvas"></canvas>

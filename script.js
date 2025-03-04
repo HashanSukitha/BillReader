@@ -4,8 +4,7 @@ const output = document.getElementById('output');
 const tableBody = document.getElementById('tableBody');
 const beepSound = document.getElementById('beepSound');
 
-let scanning = false;
-let lastExtractedText = ""; // Store last detected text to avoid duplicates
+let lastExtractedText = "";
 
 // Start Camera
 async function startCamera() {
@@ -20,8 +19,6 @@ async function startCamera() {
 
 // Capture Frame & Extract Text from Middle Line
 async function scanText() {
-    if (!scanning) return;
-
     const ctx = canvas.getContext('2d');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -36,8 +33,8 @@ async function scanText() {
     ctx.lineTo(canvas.width, canvas.height / 2);
     ctx.stroke();
 
-    // Capture only the middle slice (where red line is)
-    const sliceHeight = 50; // Adjust slice height for better results
+    // Capture only the middle slice
+    const sliceHeight = 50;
     const imageData = ctx.getImageData(0, canvas.height / 2 - sliceHeight / 2, canvas.width, sliceHeight);
 
     // Convert slice to base64 image
@@ -52,24 +49,17 @@ async function scanText() {
         imageBase64,
         'eng',
         {
-            logger: m => console.log(m) // Logs progress
+            logger: m => console.log(m)
         }
     ).then(({ data: { text } }) => {
         text = text.trim();
         if (text && text !== lastExtractedText) {
-            lastExtractedText = text; // Update last scanned text to prevent duplicates
+            lastExtractedText = text; // Prevent duplicates
             output.innerText = "Scanned Text: " + text;
             addToTable(text);
-            beepSound.play(); // Play beep sound when text is captured
+            beepSound.play();
         }
-        setTimeout(scanText, 2000); // Scan every 2 seconds
     }).catch(err => console.error(err));
-}
-
-// Start Scanning Button
-function startScanning() {
-    scanning = true;
-    scanText();
 }
 
 // Add scanned text to table

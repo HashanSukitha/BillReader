@@ -1,22 +1,20 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-let videoStream = null;
+let video = document.createElement('video');
 
-// Function to start the camera
 async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
         });
 
-        videoStream = document.createElement('video');
-        videoStream.srcObject = stream;
-        videoStream.play();
+        video.srcObject = stream;
+        video.play();
 
-        videoStream.onloadedmetadata = () => {
-            canvas.width = videoStream.videoWidth;
-            canvas.height = videoStream.videoHeight;
-            updateCanvas();
+        video.onloadedmetadata = () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            requestAnimationFrame(updateCanvas);
         };
     } catch (error) {
         alert("Error accessing camera: " + error.message);
@@ -24,10 +22,9 @@ async function startCamera() {
     }
 }
 
-// Function to continuously draw the live video feed onto the canvas
 function updateCanvas() {
-    ctx.drawImage(videoStream, 0, 0, canvas.width, canvas.height);
-    requestAnimationFrame(updateCanvas); // Keep updating the canvas
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    requestAnimationFrame(updateCanvas); // Continuously update the canvas
 }
 
 // Start camera on page load
